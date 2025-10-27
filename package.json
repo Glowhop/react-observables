@@ -1,0 +1,60 @@
+{
+	"name": "@glowhop/react-observables",
+	"version": "0.1.0",
+	"description": "Lightweight observable primitives for stateful logic in TypeScript and React.",
+	"license": "ISC",
+	"type": "module",
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
+		}
+	},
+	"files": [
+		"dist/**/*",
+		"README.md"
+	],
+	"sideEffects": false,
+	"scripts": {
+		"build": "tsup",
+		"clean": "rm -rf dist",
+		"test": "bun test",
+		"prepare": "bun run build",
+		"release": "semantic-release"
+	},
+	"keywords": [
+		"observables",
+		"state",
+		"typescript"
+	],
+	"author": "Glowhop",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Glowhop/react-observables.git"
+	},
+	"bugs": {
+		"url": "https://github.com/Glowhop/react-observables/issues"
+	},
+	"homepage": "https://github.com/Glowhop/react-observables#readme",
+	"devDependencies": {
+		"@semantic-release/git": "^10.0.1",
+		"@semantic-release/github": "^12.0.0",
+		"@semantic-release/npm": "^13.1.1",
+		"@types/node": "^22.10.5",
+		"@types/react": "^19.0.0",
+		"semantic-release": "^25.0.1",
+		"tsup": "^8.3.0",
+		"typescript": "^5.7.3"
+	},
+	"peerDependencies": {
+		"@glowhop/observables": "^1.1.0",
+		"react": "^19.0.0"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}
