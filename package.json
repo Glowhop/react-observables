@@ -29,7 +29,8 @@
 	"keywords": [
 		"observables",
 		"state",
-		"typescript"
+		"typescript",
+		"react"
 	],
 	"author": "Glowhop",
 	"repository": {
