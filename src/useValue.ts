@@ -15,28 +15,25 @@ const useValue: UseValue = <T, W = T>(
 	accessor?: (value: T) => W,
 	deps?: React.DependencyList,
 ) => {
-	// const getter = useEffectEvent((newValue: T) => {
-	//   return accessor ? accessor(newValue) : newValue;
-	// });
-
-	const getter = (newValue: T) => {
-		return accessor ? accessor(newValue) : newValue;
+	// Accessors let callers derive a slice without forcing consumers to handle optional chaining everywhere.
+	const project = (newValue: T) => {
+		return accessor ? accessor(newValue) : (newValue as unknown as W);
 	};
 
-	const [value, setValue] = useState(() => getter(observable.get()));
+	const [value, setValue] = useState(() => project(observable.get()));
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: useEffectEvent
+	// biome-ignore lint/correctness/useExhaustiveDependencies: accessor stability is delegated to deps
 	useEffect(() => {
-		const fn = (newValue: T) => {
-			setValue(() => getter(newValue));
+		const handleValue = (next: T) => {
+			setValue(project(next));
 		};
 
-		fn(observable.get());
-
-		observable.subscribe(fn);
+		// Replay the latest snapshot so the hook responds immediately even if no emission happens.
+		handleValue(observable.get());
+		const unsubscribe = observable.subscribe(handleValue);
 
 		return () => {
-			observable.unsubscribe(fn);
+			unsubscribe();
 		};
 	}, [observable, ...(deps ?? [])]);
 

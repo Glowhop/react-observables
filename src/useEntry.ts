@@ -6,6 +6,7 @@ const OBSERVABLE_MAP_TAG = "[object ObservableMap]";
 function isObservableMap<K extends string | number | bigint, T>(
 	observable: ObservableList<T> | ObservableMap<K, T>,
 ): observable is ObservableMap<K, T> {
+	// ObservableList and ObservableMap share the same surface API; Symbol.toStringTag is the safest runtime discriminator.
 	return Object.prototype.toString.call(observable) === OBSERVABLE_MAP_TAG;
 }
 
@@ -32,31 +33,32 @@ const useEntry: UseEntry = <T, K extends string | number | bigint = number, W = 
 	accessor?: (value: T | undefined) => W,
 	deps?: DependencyList,
 ) => {
-	const resolveValue = (entry: T | undefined): W => {
+	// Normalise the projected value so list and map branches share the same update logic.
+	const project = (entry: T | undefined): W => {
 		return accessor ? accessor(entry) : (entry as unknown as W);
 	};
 
-	const readEntry = () => {
+	const readSnapshot = () => {
 		if (isObservableMap(observable)) {
-			return resolveValue(observable.getEntry(index as K));
+			return project(observable.getEntry(index as K));
 		}
-		return resolveValue(observable.getEntry(index as number));
+		return project(observable.getEntry(index as number));
 	};
 
-	const [value, setValue] = useState<W>(readEntry);
+	const [value, setValue] = useState<W>(readSnapshot);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: accessor is controlled via deps
+	// Subscribe to either the indexed list entry or the keyed map entry and mirror updates into local state.
+	// biome-ignore lint/correctness/useExhaustiveDependencies: accessor participation is managed via deps
 	useEffect(() => {
-		const handler = (entry: T | undefined) => {
-			setValue(resolveValue(entry));
+		const handleEntry = (entry: T | undefined) => {
+			setValue(project(entry));
 		};
 
 		if (isObservableMap(observable)) {
 			const key = index as K;
 
-			handler(observable.getEntry(key));
-
-			const unsubscribe = observable.subscribeEntry(key, handler);
+			handleEntry(observable.getEntry(key));
+			const unsubscribe = observable.subscribeEntry(key, handleEntry);
 
 			return () => {
 				unsubscribe();
@@ -65,9 +67,8 @@ const useEntry: UseEntry = <T, K extends string | number | bigint = number, W = 
 
 		const idx = index as number;
 
-		handler(observable.getEntry(idx));
-
-		const unsubscribe = observable.subscribeEntry(idx, handler);
+		handleEntry(observable.getEntry(idx));
+		const unsubscribe = observable.subscribeEntry(idx, handleEntry);
 
 		return () => {
 			unsubscribe();
