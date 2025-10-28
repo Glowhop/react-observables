@@ -1,6 +1,6 @@
 {
 	"name": "@glowhop/react-observables",
-	"version": "0.1.0",
+	"version": "1.1.0",
 	"description": "Lightweight observable primitives for stateful logic in TypeScript and React.",
 	"license": "ISC",
 	"type": "module",
@@ -44,14 +44,19 @@
 		"@semantic-release/git": "^10.0.1",
 		"@semantic-release/github": "^12.0.0",
 		"@semantic-release/npm": "^13.1.1",
+		"@testing-library/react": "^16.3.0",
 		"@types/node": "^22.10.5",
 		"@types/react": "^19.0.0",
+		"happy-dom": "^20.0.8",
+		"react-dom": "^19.2.0",
 		"semantic-release": "^25.0.1",
 		"tsup": "^8.3.0",
 		"typescript": "^5.7.3"
 	},
+	"dependencies": {
+		"@glowhop/observables": "^1.3.0"
+	},
 	"peerDependencies": {
-		"@glowhop/observables": "^1.1.0",
 		"react": "^19.0.0"
 	},
 	"publishConfig": {

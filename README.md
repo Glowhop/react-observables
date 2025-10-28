@@ -58,7 +58,7 @@ const identity = useValue(userObservable); // recoit l'objet entier
 const displayName = useValue(
 	userObservable,
 	(user) => `${user.firstName} ${user.lastName}`,
-	[userObservable], // deps optionnelles si l'accessor reference d'autres valeurs
+	[], // deps optionnelles si l'accessor reference d'autres valeurs
 );
 ```
 
@@ -80,20 +80,13 @@ useChange(
 );
 ```
 
-### `useItem(observableList, index)`
+### `useEntry(observableList, index, accessor?, deps?)` / `useEntry(observableMap, key, accessor?, deps?)`
 
-Projette un item specifique d'une `ObservableList` et se met a jour quand l'index cible change.
-
-```tsx
-const firstTodo = useItem(todos$, 0);
-```
-
-### `useKey(observableMap, key)`
-
-Synchronise un couple `key/value` expose par une `ObservableMap`.
+Projette un element cible depuis une `ObservableList` ou une `ObservableMap`. L'`accessor` optionnel permet de deriver une valeur a partir de l'item (y compris quand il est `undefined`), et `deps` controle les resouscriptions.
 
 ```tsx
-const theme = useKey(settings$, "theme") ?? "light";
+const secondTodo = useEntry(todos$, 1);
+const theme = useEntry(settings$, "theme", (entry) => entry ?? "light");
 ```
 
 ## Recommandations d'architecture

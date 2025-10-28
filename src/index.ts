@@ -1,6 +1,15 @@
 import useChange from "./useChange";
-import useItem from "./useItem";
-import useKey from "./useKey";
+import useEntry from "./useEntry";
+import useObservable from "./useObservable";
+import useObservableList from "./useObservableList";
+import useObservableMap from "./useObservableMap";
 import useValue from "./useValue";
 
-export { useItem, useKey, useValue, useChange };
+export {
+	useChange,
+	useEntry,
+	useObservable,
+	useObservableList,
+	useObservableMap,
+	useValue,
+};
