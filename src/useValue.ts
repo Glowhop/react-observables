@@ -1,4 +1,4 @@
-import type { Observable } from "@glowhop/observables";
+import { ObservableMap, type Observable } from "@glowhop/observables";
 import { useEffect, useState } from "react";
 
 interface UseValue {

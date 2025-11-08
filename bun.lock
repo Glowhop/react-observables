@@ -4,7 +4,7 @@
     "": {
       "name": "@glowhop/react-observables",
       "dependencies": {
-        "@glowhop/observables": "^1.3.0",
+        "@glowhop/observables": "^1.3.2",
       },
       "devDependencies": {
         "@semantic-release/git": "^10.0.1",
@@ -95,7 +95,7 @@
 
     "@fastify/busboy": ["@fastify/busboy@2.1.1", "", {}, "sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA=="],
 
-    "@glowhop/observables": ["@glowhop/observables@1.3.0", "", {}, "sha512-5mkwZjImI/INeLjgq/Gb91aiA+pwVzbw8wmLd3wiFbI6d/+pC227YuAmBaZpsfxdClcidrx/yy4K8O+B9vCG1Q=="],
+    "@glowhop/observables": ["@glowhop/observables@1.3.2", "", {}, "sha512-ThHspeYVmJeklTymbFPouDSQjTrykS3cVDViWgggj3gv1oe3Aix4mXbgYZu7XMyhZ9GK9gSx2UhN8b8FLf2dyA=="],
 
     "@isaacs/cliui": ["@isaacs/cliui@8.0.2", "", { "dependencies": { "string-width": "^5.1.2", "string-width-cjs": "npm:string-width@^4.2.0", "strip-ansi": "^7.0.1", "strip-ansi-cjs": "npm:strip-ansi@^6.0.1", "wrap-ansi": "^8.1.0", "wrap-ansi-cjs": "npm:wrap-ansi@^7.0.0" } }, "sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA=="],
 

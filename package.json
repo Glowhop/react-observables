@@ -55,7 +55,7 @@
 		"typescript": "^5.7.3"
 	},
 	"dependencies": {
-		"@glowhop/observables": "^1.3.0"
+		"@glowhop/observables": "^1.3.2"
 	},
 	"peerDependencies": {
 		"react": "^19.0.0"
