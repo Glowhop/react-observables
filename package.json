@@ -1,6 +1,6 @@
 {
 	"name": "@glowhop/react-observables",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"description": "React hooks for @glowhop/observables",
 	"license": "ISC",
 	"type": "module",

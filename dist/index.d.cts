@@ -11,12 +11,6 @@ interface UseEntry {
 }
 declare const useEntry: UseEntry;
 
-declare function useObservable<T>(initialValue: T): Observable<T>;
-
-declare function useObservableList<T>(initialValue: T[]): ObservableList<T>;
-
-declare function useObservableMap<K extends string | number | bigint, T>(initialValue: Map<K, T> | [K, T][]): ObservableMap<K, T>;
-
 interface UseValue {
     <T>(observable: Observable<T>): T;
     <T, W = T>(observable: Observable<T>, accessor?: (value: T) => W, deps?: React.DependencyList): W;
@@ -29,4 +23,4 @@ interface UseLazy {
 }
 declare const useLazy: UseLazy;
 
-export { useChange, useEntry, useLazy, useObservable, useObservableList, useObservableMap, useValue };
+export { useChange, useEntry, useLazy, useValue };

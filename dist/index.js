@@ -56,34 +56,13 @@ var useEntry = (observable, index, accessor, deps) => {
 };
 var useEntry_default = useEntry;
 
-// src/useObservable.ts
-import { Observable } from "@glowhop/observables";
-import { useState as useState2 } from "react";
-function useObservable(initialValue) {
-  return useState2(() => new Observable(initialValue))[0];
-}
-
-// src/useObservableList.ts
-import { ObservableList } from "@glowhop/observables";
-import { useState as useState3 } from "react";
-function useObservableList(initialValue) {
-  return useState3(() => new ObservableList(initialValue))[0];
-}
-
-// src/useObservableMap.ts
-import { ObservableMap } from "@glowhop/observables";
-import { useState as useState4 } from "react";
-function useObservableMap(initialValue) {
-  return useState4(() => new ObservableMap(initialValue))[0];
-}
-
 // src/useValue.ts
-import { useEffect as useEffect3, useState as useState5 } from "react";
+import { useEffect as useEffect3, useState as useState2 } from "react";
 var useValue = (observable, accessor, deps) => {
   const project = (newValue) => {
     return accessor ? accessor(newValue) : newValue;
   };
-  const [value, setValue] = useState5(() => project(observable.get()));
+  const [value, setValue] = useState2(() => project(observable.get()));
   useEffect3(() => {
     const handleValue = (next) => {
       setValue(project(next));
@@ -99,12 +78,12 @@ var useValue = (observable, accessor, deps) => {
 var useValue_default = useValue;
 
 // src/useLazy.ts
-import { startTransition, useEffect as useEffect4, useState as useState6 } from "react";
+import { startTransition, useEffect as useEffect4, useState as useState3 } from "react";
 var useLazy = (observable, accessor, deps) => {
   const project = (newValue) => {
     return accessor ? accessor(newValue) : newValue;
   };
-  const [value, setValue] = useState6(() => project(observable.get()));
+  const [value, setValue] = useState3(() => project(observable.get()));
   useEffect4(() => {
     const handleValue = (next) => {
       startTransition(() => {
@@ -124,9 +103,6 @@ export {
   useChange,
   useEntry_default as useEntry,
   useLazy_default as useLazy,
-  useObservable,
-  useObservableList,
-  useObservableMap,
   useValue_default as useValue
 };
 //# sourceMappingURL=index.js.map

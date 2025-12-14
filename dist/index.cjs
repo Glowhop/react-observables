@@ -23,9 +23,6 @@ __export(src_exports, {
   useChange: () => useChange,
   useEntry: () => useEntry_default,
   useLazy: () => useLazy_default,
-  useObservable: () => useObservable,
-  useObservableList: () => useObservableList,
-  useObservableMap: () => useObservableMap,
   useValue: () => useValue_default
 });
 module.exports = __toCommonJS(src_exports);
@@ -88,35 +85,14 @@ var useEntry = (observable, index, accessor, deps) => {
 };
 var useEntry_default = useEntry;
 
-// src/useObservable.ts
-var import_observables = require("@glowhop/observables");
-var import_react3 = require("react");
-function useObservable(initialValue) {
-  return (0, import_react3.useState)(() => new import_observables.Observable(initialValue))[0];
-}
-
-// src/useObservableList.ts
-var import_observables2 = require("@glowhop/observables");
-var import_react4 = require("react");
-function useObservableList(initialValue) {
-  return (0, import_react4.useState)(() => new import_observables2.ObservableList(initialValue))[0];
-}
-
-// src/useObservableMap.ts
-var import_observables3 = require("@glowhop/observables");
-var import_react5 = require("react");
-function useObservableMap(initialValue) {
-  return (0, import_react5.useState)(() => new import_observables3.ObservableMap(initialValue))[0];
-}
-
 // src/useValue.ts
-var import_react6 = require("react");
+var import_react3 = require("react");
 var useValue = (observable, accessor, deps) => {
   const project = (newValue) => {
     return accessor ? accessor(newValue) : newValue;
   };
-  const [value, setValue] = (0, import_react6.useState)(() => project(observable.get()));
-  (0, import_react6.useEffect)(() => {
+  const [value, setValue] = (0, import_react3.useState)(() => project(observable.get()));
+  (0, import_react3.useEffect)(() => {
     const handleValue = (next) => {
       setValue(project(next));
     };
@@ -131,15 +107,15 @@ var useValue = (observable, accessor, deps) => {
 var useValue_default = useValue;
 
 // src/useLazy.ts
-var import_react7 = require("react");
+var import_react4 = require("react");
 var useLazy = (observable, accessor, deps) => {
   const project = (newValue) => {
     return accessor ? accessor(newValue) : newValue;
   };
-  const [value, setValue] = (0, import_react7.useState)(() => project(observable.get()));
-  (0, import_react7.useEffect)(() => {
+  const [value, setValue] = (0, import_react4.useState)(() => project(observable.get()));
+  (0, import_react4.useEffect)(() => {
     const handleValue = (next) => {
-      (0, import_react7.startTransition)(() => {
+      (0, import_react4.startTransition)(() => {
         setValue(project(next));
       });
     };
@@ -157,9 +133,6 @@ var useLazy_default = useLazy;
   useChange,
   useEntry,
   useLazy,
-  useObservable,
-  useObservableList,
-  useObservableMap,
   useValue
 });
 //# sourceMappingURL=index.cjs.map
