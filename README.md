@@ -1,34 +1,33 @@
 # @glowhop/react-observables
 
-Adaptateurs React legers pour les primitives `Observable` du paquet `@glowhop/observables`. Rattachez vos flux reactifs a l'ecosysteme React sans dupliquer la logique metier.
+Lightweight React adapters for the `Observable` primitives provided by `@glowhop/observables`. Wire your reactive pipelines into React without duplicating business logic.
 
-## Fonctionnalites
+## Features
 
-- Hooks concis pour projeter des `Observable`, `ObservableList` et `ObservableMap` dans l'UI.
-- Selection memoizable via un `accessor` et une liste de dependances controlee.
-- Version "lazily concurrente" (`useLazy`) qui synchronise les emissions sous `startTransition`.
-- Typage complet TypeScript avec builds ESM et CommonJS dans `dist/`.
-- Aucun runtime supplementaire : les hooks exploitent vos instances existantes d'`@glowhop/observables`.
+- Concise hooks to project `Observable`, `ObservableList`, and `ObservableMap` data into components.
+- Memoizable selection through an `accessor` and an explicit dependency list.
+- Lazy concurrent variant (`useLazy`) that mirrors emissions inside `startTransition`.
+- Complete TypeScript typings with ESM and CommonJS builds under `dist/`.
+- Zero extra runtime: hooks operate on the `@glowhop/observables` instances you already own.
 
 ## Installation
 
-Assurez-vous que les dependances pair `@glowhop/observables` et `react` sont deja presentes.
+Ensure `@glowhop/observables` and `react` are already installed (peer dependencies).
 
 ```bash
 npm install @glowhop/react-observables
-# ou
+# or
 yarn add @glowhop/react-observables
-# ou
+# or
 pnpm add @glowhop/react-observables
-# ou
+# or
 bun add @glowhop/react-observables
 ```
 
-## Prise en main
+## Getting started
 
 ```tsx
 import { Observable } from "@glowhop/observables";
-import { useMemo } from "react";
 import { useValue } from "@glowhop/react-observables";
 
 const counter = new Observable(0);
@@ -38,35 +37,35 @@ export function CounterButton() {
 
 	return (
 		<button onClick={() => counter.set((prev) => prev + 1)}>
-			Clics: {clicks}
+			Clicks: {clicks}
 		</button>
 	);
 }
 ```
 
-Les hooks ne creent ni ne gerent d'instances observables : vous restez libre de les declarer dans vos stores, services ou providers. Tant que l'instance est stable (memoisee, stockee dans un contexte, etc.), React se resynchronise automatiquement.
+Hooks never create or manage observable instances; declare them in services, stores, or contexts and keep the reference stable (memoized, context value, singleton, etc.). React will resubscribe automatically.
 
-## Hooks disponibles
+## Available hooks
 
 ### `useValue(observable, accessor?, deps?)`
 
-- Retourne la valeur courante exposee par l'`Observable` et se met a jour sur chaque emission.
-- `accessor` permet de deriver un sous-ensemble des donnees (selector).
-- `deps` controle quand recalculer l'accessor; laissez vide si l'accesseur n'utilise pas d'autres valeurs React.
+- Returns the current snapshot exposed by the `Observable` and updates synchronously on new emissions.
+- `accessor` lets you derive a slice of the data (selector).
+- `deps` controls when the accessor is recomputed if it captures other React values.
 
 ```tsx
-const identity = useValue(userObservable); // recoit l'objet entier
+const identity = useValue(user$); // entire object
 const displayName = useValue(
-	userObservable,
+	user$,
 	(user) => `${user.firstName} ${user.lastName}`,
-	[], // deps optionnelles si l'accessor reference d'autres valeurs
+	[], // optional deps if the accessor references other values
 );
 ```
 
 ### `useLazy(observable, accessor?, deps?)`
 
-- Meme API que `useValue`, mais les mises a jour sont schedulees via `startTransition` afin de laisser React prioriser les interactions urgentes.
-- Utile lorsque les projections sont couteuses ou quand vous souhaitez eviter les re-render synchrones sous forte charge.
+- Same signature as `useValue`, but updates are scheduled through `startTransition` so React can prioritize urgent interactions.
+- Handy when projections are expensive or you want to avoid synchronous re-render spikes.
 
 ```tsx
 const preview = useLazy(
@@ -78,8 +77,8 @@ const preview = useLazy(
 
 ### `useChange(observable, accessor, deps)`
 
-- Execute `accessor` immediatement puis a chaque emission.
-- Ideal pour relayer l'etat observable vers une reference mutable, un service ou une integration non React.
+- Executes `accessor` immediately and on every emission.
+- Perfect for mirroring observable state into refs, services, or other non-React integrations.
 
 ```tsx
 const titleRef = useRef<HTMLTitleElement | null>(null);
@@ -98,31 +97,31 @@ useChange(
 
 ### `useEntry(observableList, index, accessor?, deps?)` / `useEntry(observableMap, key, accessor?, deps?)`
 
-- Projette un element cible depuis une `ObservableList` (par index) ou une `ObservableMap` (par cle).
-- `accessor` optionnel pour deriver une valeur a partir de l'item (y compris quand il est `undefined`).
-- Les resouscriptions sont automatiquement gerees quand `index`/`key` changent.
+- Projects a single entry from an `ObservableList` (by index) or an `ObservableMap` (by key).
+- Optional `accessor` lets you derive a value from the entry, even when it is `undefined`.
+- Automatically resubscribes when `index`/`key` changes.
 
 ```tsx
 const secondTodo = useEntry(todos$, 1);
 const theme = useEntry(settings$, "theme", (entry) => entry ?? "light");
 ```
 
-## Recommandations d'architecture
+## Architecture tips
 
-- Stabilisez vos observables avec `useMemo`, des contexts ou des singletons pour eviter les resouscriptions inutiles.
-- Combinez les observables entre eux dans la couche metier, puis exposez uniquement les flux necessaires aux composants React.
-- Appuyez-vous sur TypeScript pour beneficier des generiques proposes par le paquet.
+- Stabilize observables with `useMemo`, contexts, or singletons to avoid needless resubscriptions.
+- Compose observables in your domain layer, then expose only the streams components require.
+- Lean on TypeScript generics provided by the package for end-to-end type safety.
 
-## Scripts de developpement
+## Development scripts
 
 ```bash
-bun install       # installe les dependances
-bun test          # lance la suite de tests
-bun run build     # genere les bundles ESM/CJS + declarations .d.ts
+bun install       # install dependencies
+bun test          # run the test suite
+bun run build     # emit ESM/CJS bundles and .d.ts types
 ```
 
-Le paquet est publie via `semantic-release`, configure dans `package.json` via le script `bun run release`.
+Releases are automated through `semantic-release` (see `package.json`'s `bun run release` script).
 
-## Licence
+## License
 
-Ce projet est distribue sous licence ISC.
+Distributed under the ISC license.
