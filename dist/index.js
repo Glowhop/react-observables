@@ -97,9 +97,33 @@ var useValue = (observable, accessor, deps) => {
   return value;
 };
 var useValue_default = useValue;
+
+// src/useLazy.ts
+import { startTransition, useEffect as useEffect4, useState as useState6 } from "react";
+var useLazy = (observable, accessor, deps) => {
+  const project = (newValue) => {
+    return accessor ? accessor(newValue) : newValue;
+  };
+  const [value, setValue] = useState6(() => project(observable.get()));
+  useEffect4(() => {
+    const handleValue = (next) => {
+      startTransition(() => {
+        setValue(project(next));
+      });
+    };
+    handleValue(observable.get());
+    const unsubscribe = observable.subscribe(handleValue);
+    return () => {
+      unsubscribe();
+    };
+  }, [observable, ...deps ?? []]);
+  return value;
+};
+var useLazy_default = useLazy;
 export {
   useChange,
   useEntry_default as useEntry,
+  useLazy_default as useLazy,
   useObservable,
   useObservableList,
   useObservableMap,

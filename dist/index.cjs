@@ -22,6 +22,7 @@ var src_exports = {};
 __export(src_exports, {
   useChange: () => useChange,
   useEntry: () => useEntry_default,
+  useLazy: () => useLazy_default,
   useObservable: () => useObservable,
   useObservableList: () => useObservableList,
   useObservableMap: () => useObservableMap,
@@ -128,10 +129,34 @@ var useValue = (observable, accessor, deps) => {
   return value;
 };
 var useValue_default = useValue;
+
+// src/useLazy.ts
+var import_react7 = require("react");
+var useLazy = (observable, accessor, deps) => {
+  const project = (newValue) => {
+    return accessor ? accessor(newValue) : newValue;
+  };
+  const [value, setValue] = (0, import_react7.useState)(() => project(observable.get()));
+  (0, import_react7.useEffect)(() => {
+    const handleValue = (next) => {
+      (0, import_react7.startTransition)(() => {
+        setValue(project(next));
+      });
+    };
+    handleValue(observable.get());
+    const unsubscribe = observable.subscribe(handleValue);
+    return () => {
+      unsubscribe();
+    };
+  }, [observable, ...deps ?? []]);
+  return value;
+};
+var useLazy_default = useLazy;
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   useChange,
   useEntry,
+  useLazy,
   useObservable,
   useObservableList,
   useObservableMap,

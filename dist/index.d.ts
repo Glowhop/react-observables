@@ -23,4 +23,10 @@ interface UseValue {
 }
 declare const useValue: UseValue;
 
-export { useChange, useEntry, useObservable, useObservableList, useObservableMap, useValue };
+interface UseLazy {
+    <T>(observable: Observable<T>): T;
+    <T, W = T>(observable: Observable<T>, accessor?: (value: T) => W, deps?: React.DependencyList): W;
+}
+declare const useLazy: UseLazy;
+
+export { useChange, useEntry, useLazy, useObservable, useObservableList, useObservableMap, useValue };
