@@ -6,6 +6,7 @@ Adaptateurs React legers pour les primitives `Observable` du paquet `@glowhop/ob
 
 - Hooks concis pour projeter des `Observable`, `ObservableList` et `ObservableMap` dans l'UI.
 - Selection memoizable via un `accessor` et une liste de dependances controlee.
+- Version "lazily concurrente" (`useLazy`) qui synchronise les emissions sous `startTransition`.
 - Typage complet TypeScript avec builds ESM et CommonJS dans `dist/`.
 - Aucun runtime supplementaire : les hooks exploitent vos instances existantes d'`@glowhop/observables`.
 
@@ -49,9 +50,9 @@ Les hooks ne creent ni ne gerent d'instances observables : vous restez libre de 
 
 ### `useValue(observable, accessor?, deps?)`
 
-- Retourne la valeur courante exposee par l'`Observable`.
+- Retourne la valeur courante exposee par l'`Observable` et se met a jour sur chaque emission.
 - `accessor` permet de deriver un sous-ensemble des donnees (selector).
-- `deps` controle quand recalculer l'accessor; laissez vide pour utiliser uniquement les changements emis par l'observable.
+- `deps` controle quand recalculer l'accessor; laissez vide si l'accesseur n'utilise pas d'autres valeurs React.
 
 ```tsx
 const identity = useValue(userObservable); // recoit l'objet entier
@@ -62,9 +63,23 @@ const displayName = useValue(
 );
 ```
 
+### `useLazy(observable, accessor?, deps?)`
+
+- Meme API que `useValue`, mais les mises a jour sont schedulees via `startTransition` afin de laisser React prioriser les interactions urgentes.
+- Utile lorsque les projections sont couteuses ou quand vous souhaitez eviter les re-render synchrones sous forte charge.
+
+```tsx
+const preview = useLazy(
+	searchResults$,
+	(results) => results.slice(0, 5),
+	[],
+);
+```
+
 ### `useChange(observable, accessor, deps)`
 
-Execute `accessor` a chaque emission. Ideal pour relayer l'etat observable vers une reference mutable ou un service.
+- Execute `accessor` immediatement puis a chaque emission.
+- Ideal pour relayer l'etat observable vers une reference mutable, un service ou une integration non React.
 
 ```tsx
 const titleRef = useRef<HTMLTitleElement | null>(null);
@@ -72,8 +87,9 @@ const titleRef = useRef<HTMLTitleElement | null>(null);
 useChange(
 	documentTitle$,
 	(value) => {
-		if (titleRef.current) {
-			titleRef.current.textContent = value;
+		const node = titleRef.current;
+		if (node) {
+			node.textContent = value;
 		}
 	},
 	[titleRef],
@@ -82,7 +98,9 @@ useChange(
 
 ### `useEntry(observableList, index, accessor?, deps?)` / `useEntry(observableMap, key, accessor?, deps?)`
 
-Projette un element cible depuis une `ObservableList` ou une `ObservableMap`. L'`accessor` optionnel permet de deriver une valeur a partir de l'item (y compris quand il est `undefined`), et `deps` controle les resouscriptions.
+- Projette un element cible depuis une `ObservableList` (par index) ou une `ObservableMap` (par cle).
+- `accessor` optionnel pour deriver une valeur a partir de l'item (y compris quand il est `undefined`).
+- Les resouscriptions sont automatiquement gerees quand `index`/`key` changent.
 
 ```tsx
 const secondTodo = useEntry(todos$, 1);
