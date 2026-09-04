@@ -52,4 +52,32 @@ describe("useLazy", () => {
 			expect(result.current).toBe(9);
 		});
 	});
+
+	it("coalesces synchronous emissions and projects only the latest value", async () => {
+		const observable = new Observable(0);
+		const projected: number[] = [];
+
+		const { result } = renderHook(() =>
+			useLazy(observable, (value) => {
+				projected.push(value);
+				return value;
+			}),
+		);
+
+		await waitFor(() => {
+			expect(result.current).toBe(0);
+		});
+		projected.length = 0;
+
+		act(() => {
+			observable.set(1);
+			observable.set(2);
+			observable.set(3);
+		});
+
+		await waitFor(() => {
+			expect(result.current).toBe(3);
+		});
+		expect(projected).toEqual([3]);
+	});
 });

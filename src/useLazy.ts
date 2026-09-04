@@ -24,17 +24,33 @@ const useLazy: UseLazy = <T, W = T>(
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: accessor stability is delegated to deps
     useEffect(() => {
-        const handleValue = (next: T) => {
+        let scheduled = false;
+        let latest = observable.get();
+        let active = true;
+
+        const flush = () => {
+            scheduled = false;
+            if (!active) return;
+
             startTransition(() => {
-                setValue(project(next));
-            })
+                setValue(project(latest));
+            });
+        };
+
+        const handleValue = (next: T) => {
+            latest = next;
+            if (scheduled) return;
+
+            scheduled = true;
+            queueMicrotask(flush);
         };
 
         // Replay the latest snapshot so the hook responds immediately even if no emission happens.
-        handleValue(observable.get());
+        handleValue(latest);
         const unsubscribe = observable.subscribe(handleValue);
 
         return () => {
+            active = false;
             unsubscribe();
         };
     }, [observable, ...(deps ?? [])]);
